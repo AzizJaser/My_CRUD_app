@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: My_CRUD_App
+
+  datasource:
+    url: jdbc:postgresql://localhost:5334/CRUDdb
+    username: aziz
+    password: password_123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show: true
