@@ -1,9 +1,12 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: My_CRUD_App
 
   datasource:
-    url: jdbc:postgresql://localhost:5334/CRUDdb
+    url: jdbc:postgresql://localhost:5432/CRUDdb
     username: aziz
     password: password_123
     driver-class-name: org.postgresql.Driver
@@ -15,3 +18,15 @@ spring:
       hibernate:
         format_sql: true
     show: true
+jwt:
+  secret: your-secret-key-here-make-it-long-and-secure
+  expiration: 86400000  # 24 hours in milliseconds
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+  endpoint:
+    health:
+      show-details: when-authorized
