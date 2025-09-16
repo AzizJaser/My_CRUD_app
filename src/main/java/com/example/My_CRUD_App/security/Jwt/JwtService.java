@@ -2,24 +2,26 @@ package com.example.My_CRUD_App.security.Jwt;
 
 import com.example.My_CRUD_App.entity.User;
 import com.example.My_CRUD_App.repository.UserRepository;
-import com.example.My_CRUD_App.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+@Service
 public class JwtService {
 
     @Value("${jwt.secret}")
@@ -32,20 +34,22 @@ public class JwtService {
     private UserRepository userRepository;
 
 
-    public String generateToken(User user){
-
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRoles());
 
-        Instant now = Instant.now();
-        Instant expiry = now.plusMillis(expirationMillis);
+        // Convert roles to a list of strings (Spring expects "authorities" claim)
+        claims.put("authorities", user.getRoles().stream()
+                .map(role -> "ROLE_" + role.name()) // ensure prefix is "ROLE_"
+                .collect(Collectors.toList()));
 
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expiry = now.plusHours(1);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getEmail())
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(expiry))
+                .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
+                .setExpiration(Date.from(expiry.atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -54,20 +58,21 @@ public class JwtService {
         return extractClaim(token,Claims::getSubject);
     }
 
-    public Date extractExpiration(String token){
-        return extractClaim(token,Claims::getExpiration);
+    public LocalDateTime extractExpiration(String token){
+        Date date = extractClaim(token, Claims::getExpiration);
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
     public boolean isValidToken(String token){
-        // first check the email dose it exist or not ?
         String email = extractEmail(token);
-        Date expiry = extractExpiration(token);
-        if(!userRepository.existsByEmail(email)){
-            throw new RuntimeException("Email dose not exsist !");
+        LocalDateTime expiry = extractExpiration(token);
+
+        if (!userRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email does not exist!");
         }
-        // second check if the token expired
-        if(expiry.before(Date.from(Instant.now()))){
-            throw new RuntimeException("Token expired !");
+
+        if (expiry.isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Token expired!");
         }
 
         return true;

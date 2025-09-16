@@ -61,6 +61,8 @@ public class UserService {
             throw new IllegalArgumentException("Email already exists!");
         }
 
+        System.out.println("Password length = " + user.getPassword().length());
+
         // Update fields
         user.setUsername(newUser.getUsername());
         user.setEmail(newUser.getEmail());
@@ -88,5 +90,12 @@ public class UserService {
         return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("user was not found"));
     }
 
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("user was not found"));
+    }
 
 }

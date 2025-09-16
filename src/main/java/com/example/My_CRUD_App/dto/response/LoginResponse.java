@@ -1,6 +1,6 @@
 package com.example.My_CRUD_App.dto.response;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class LoginResponse {
 
@@ -8,14 +8,14 @@ public class LoginResponse {
 
     private final String type = "Bearer ";
 
-    private Instant issueAt;
+    private LocalDateTime issueAt;
 
-    private Instant expireAt;
+    private LocalDateTime expireAt;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(String token, Instant expireAt,Instant issueAt) {
+    public LoginResponse(String token, LocalDateTime expireAt, LocalDateTime issueAt) {
         this.token = token;
         this.issueAt = issueAt;
         this.expireAt = expireAt;
@@ -33,19 +33,19 @@ public class LoginResponse {
         return type;
     }
 
-    public Instant getExpireAt() {
+    public LocalDateTime getExpireAt() {
         return expireAt;
     }
 
-    public void setIssueAt(Instant issueAt) {
+    public void setIssueAt(LocalDateTime issueAt) {
         this.issueAt = issueAt;
     }
 
-    public void setExpireAt(Instant expireAt) {
+    public void setExpireAt(LocalDateTime expireAt) {
         this.expireAt = expireAt;
     }
 
-    public Instant getIssueAt() {
+    public LocalDateTime getIssueAt() {
         return issueAt;
     }
 

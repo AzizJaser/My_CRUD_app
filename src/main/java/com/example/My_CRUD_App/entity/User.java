@@ -30,7 +30,6 @@ public class User {
     private String username;
 
     @NotBlank(message = "password can not be null")
-    @Size(min = 3,max = 10,message = "password length must be between 3 and 10 character")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column
     private String password;
