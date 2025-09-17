@@ -28,7 +28,6 @@ public class UserService {
             throw new IllegalArgumentException("Email already exists!");
         }
 
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);
     }

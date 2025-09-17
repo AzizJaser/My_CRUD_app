@@ -31,7 +31,10 @@ public class AuthService {
         if(userService.existsByEmail(request.getEmail())){
             throw new IllegalArgumentException("Email is already used !");
         }
+
         String encodedPassword = passwordEncoder.encode(request.getPassword());
+
+        System.out.println("PasswordEncoder instance: " + passwordEncoder.hashCode());
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -53,8 +56,13 @@ public class AuthService {
     public LoginResponse login(LoginRequest request){
         User user = userService.getUserByEmail(request.getEmail());
 
+        System.out.println("PasswordEncoder instance: " + passwordEncoder.hashCode());
+        System.out.println("Plain: " + request.getPassword());
+        System.out.println("Encoded in DB: " + user.getPassword());
+        System.out.println("Match: " + passwordEncoder.matches(request.getPassword(), user.getPassword()));
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid credentials!");
+            throw new IllegalArgumentException("Invalid credentials! -from login method-");
         }
 
         String token = jwtService.generateToken(user);
