@@ -1,8 +1,10 @@
 package com.example.My_CRUD_App.service;
 
 import com.example.My_CRUD_App.entity.User;
+import com.example.My_CRUD_App.enums.Status;
 import com.example.My_CRUD_App.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -97,4 +99,10 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("user was not found"));
     }
 
+    public void updateUserStatus(Long id, Status status){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("user not with id: "+id+" is not found!"));
+        user.setStatus(status);
+        userRepository.save(user);
+    }
 }

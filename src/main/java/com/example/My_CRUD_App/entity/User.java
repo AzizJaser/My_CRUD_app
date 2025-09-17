@@ -19,7 +19,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
@@ -92,7 +92,7 @@ public class User {
         this.age = age;
         this.phoneNumber = phoneNumber;
         this.status = status != null ? status : Status.ACTIVE;
-        this.roles = roles != null ? roles : Set.of(Roles.USER);
+        this.roles = roles != null ? roles : Set.of(Roles.ROLE_USER);
     }
 
     public Long getId() {

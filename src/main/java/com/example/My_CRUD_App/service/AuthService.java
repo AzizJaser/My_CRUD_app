@@ -5,6 +5,7 @@ import com.example.My_CRUD_App.dto.request.RegisterRequest;
 import com.example.My_CRUD_App.dto.response.LoginResponse;
 import com.example.My_CRUD_App.entity.User;
 import com.example.My_CRUD_App.enums.Roles;
+import com.example.My_CRUD_App.enums.Status;
 import com.example.My_CRUD_App.security.Jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -43,8 +44,9 @@ public class AuthService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         Set<Roles> defaultRoles = new HashSet<>();
-        defaultRoles.add(Roles.USER);  // assuming this is one of your enum values
+        defaultRoles.add(Roles.ROLE_USER);  // assuming this is one of your enum values
         user.setRoles(defaultRoles);
+        user.setStatus(Status.ACTIVE);
         userService.createUser(user);
         String token = jwtService.generateToken(user);
         LoginResponse response = new LoginResponse(token, jwtService.extractExpiration(token), LocalDateTime.now());
@@ -56,7 +58,7 @@ public class AuthService {
 
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid credentials! -from login method-");
+            throw new IllegalArgumentException("Invalid credentials!");
         }
 
         String token = jwtService.generateToken(user);
