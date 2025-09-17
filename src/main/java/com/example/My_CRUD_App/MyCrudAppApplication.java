@@ -10,6 +10,7 @@ public class MyCrudAppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MyCrudAppApplication.class, args);
+		System.out.println(new BCryptPasswordEncoder().encode("admin123"));
 		System.out.println("---------------Custom Logs---------------");
 	}
 

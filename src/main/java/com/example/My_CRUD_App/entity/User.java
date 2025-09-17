@@ -60,6 +60,7 @@ public class User {
     @Column
     private String phoneNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column
     private Status status;
 
